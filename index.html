@@ -22,10 +22,16 @@
 			<!--搜索框-->
 			<div class="search-wrapper">
 				<span class="mui-icon mui-icon-search"></span>
-				<span></span>
+				<span>电影/电视剧/影人</span>
 			</div>
 			<!--搜索框-end-->
-			
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell">1</li>
+					</ul>
+				</div>
+			</div>
 		</div>
 
 		<script src="js/util.js"></script>
@@ -84,16 +90,26 @@
 							plus.webview.open('html/new-webview.html', 'new', {}, 'slide-in-right', 200);
 						}
 					});
+					
+					
 				
 				});
 				
 				
 				mui('.search-wrapper')[0].addEventListener('tap', function(){
-					let aa = plus.camera.getCamera();
+					/*let aa = plus.camera.getCamera();
 					aa.captureImage(function(p){
 						console.log(p)
-					})
+					})*/
 				})
+				
+				mui('.mui-scroll-wrapper').scroll({});
+				
+				//获取热映数据
+					mui.getJSON('https://api.douban.com/v2/movie/in_theaters', {}, function(resp){
+						console.log('aaaw');
+						console.log(resp.count);
+					})
 				
 			})();
 		</script>

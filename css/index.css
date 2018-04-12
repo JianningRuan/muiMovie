@@ -2,6 +2,11 @@
     margin: 15px;
     height: 30px;
     border-radius: 4px;
-    background-color: #8f8f94;
+    background-color: #e6e6e6;
     text-align: center;
+}
+.search-wrapper  span {
+	font-size: 16px;
+	line-height: 30px;
+	color: #AAAAAA;
 }
