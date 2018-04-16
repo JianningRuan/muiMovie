@@ -6,16 +6,69 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<link href="../css/movie-detail.css" rel="stylesheet" />
 	</head>
 
 	<body>
-		<div class="mui-content">6666</div>
+	<div>
+		<header class="mui-bar mui-bar-nav mui-bar-transparent">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">电影</h1>
+		</header>
+		<div class="mui-content">
+			<div class="top-image-block">
+				<img />
+			</div>
+			<div class="movie-msg flex f-align-center">
+				<div class="flex1">
+					<div class="dark-big mui-ellipsis">巨兽</div>
+					<div class="grey-micro mui-ellipsis">2018 / 动作 / 3d</div>
+					<div class="grey-micro mui-ellipsis">原名： big most</div>
+					<div class="grey-micro mui-ellipsis">上映时间： 2018年12月11日</div>
+					<div class="grey-micro mui-ellipsis">片长： 107分钟</div>
+				</div>
+				<div class="score-box">
+					<div class="grey-micro">豆瓣评分</div>
+					<div class="dark-big">6.8</div>
+					<div class="grey-micro">17888人</div>
+				</div>
+			</div>
+			<div class="line"></div>
+			<div class="movie-detail">
+				<div class="grey-small">简介</div>
+				<div class="dark-small mui-ellipsis-4"></div>
+
+				<div class="grey-small">影人</div>
+				<div class="artist-wrapper">
+					<div class="artist">
+						<img class="artist-pic" />
+						<div class="artist-name mui-ellipsis"></div>
+					</div>
+				</div>
+
+				<div class="grey-small">评论</div>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell flex comment">
+						<div class="comment-user-pic">
+							<img src="" />
+						</div>
+						<div class="comment-cont flex1">
+							<div class="comment-user dark-small">讲多无谓</div>
+							<div class="comment-msg grey-small">应见到家家发发发</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 		<script src="../js/mui.min.js"></script>
 		<script type="text/javascript">
 			mui.init();
 			
 			window.addEventListener('movieId', function(event){
-				
+				var id = event.detail.id;
+				console.log(id);
 			})
 		</script>
 	</body>

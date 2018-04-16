@@ -47,6 +47,8 @@
 		<script src="js/vue.min.js"></script>
 		<script src="js/util.js"></script>
 		<script type="text/javascript">
+			var detailPage;
+
 			let vue = new Vue({
 				el: '#app',
 				data: {
@@ -67,11 +69,11 @@
 				util.initSubpage(aniShow);
 
 				var nview = plus.nativeObj.View.getViewById('tabBar'),
-						activePage = plus.webview.currentWebview(),
-						targetPage,
-						subpages = util.options.subpages,
-						pageW = window.innerWidth,
-						currIndex = 0;
+					activePage = plus.webview.currentWebview(),
+					targetPage,
+					subpages = util.options.subpages,
+					pageW = window.innerWidth,
+					currIndex = 0;
 
 				/**
 				 * 根据判断view控件点击位置判断切换的tab
@@ -108,33 +110,36 @@
 						plus.webview.open('html/new-webview.html', 'new', {}, 'slide-in-right', 200);
 					}
 				});
+
+
+				/**/
+				//预加载详细页面
+				detailPage = mui.preload({
+					id:'movie-detail',
+					url:'./html/movie-detail.html'
+				});
+				console.log(detailPage);
+
+				mui('.search-wrapper')[0].addEventListener('tap', function(){
+					console.log('sousuo')
+					/*let aa = plus.camera.getCamera();
+					 aa.captureImage(function(p){
+					 console.log(p)
+					 })*/
+				});
+
+				mui('.mui-scroll-wrapper').scroll({
+					indicators:false
+				});
+
+				mui.getJSON('https://api.douban.com/v2/movie/in_theaters', {
+					start: vue.movie.length,
+					count: 20
+				}, function(res){
+					vue.movie = vue.movie.concat(res.subjects);
+				})
+
 			});
-
-
-			mui('.search-wrapper')[0].addEventListener('tap', function(){
-				/*let aa = plus.camera.getCamera();
-				 aa.captureImage(function(p){
-				 console.log(p)
-				 })*/
-			});
-
-			mui('.mui-scroll-wrapper').scroll({
-				indicators:false
-			});
-
-			mui.getJSON('https://api.douban.com/v2/movie/in_theaters', {
-				start: vue.movie.length,
-				count: 20
-			}, function(res){
-				vue.movie = vue.movie.concat(res.subjects);
-			})
-
-			//预加载详细页面
-			var detailPage = mui.preload({
-				id:'movie-detail',
-				url:'./html/movie-detail.html'
-			});
-			console.log(detailPage);
 
 			function goDetail(item){
 				console.log(item);

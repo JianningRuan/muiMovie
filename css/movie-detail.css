@@ -1,0 +1,74 @@
+.top-image-block {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: #3c3c3c;
+    text-align: center;
+}
+.top-image-block img {
+    width: 160px;
+    height: 240px;
+}
+.movie-msg {
+    padding: 15px;
+}
+.movie-msg .score-box {
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    box-shadow: 0 0 10px #aaa;
+}
+
+.mui-ellipsis-4 {
+    display: -webkit-box;
+    overflow: hidden;
+
+    white-space: normal !important;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+.movie-detail {
+    padding: 15px;
+}
+
+.artist-wrapper {
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+.artist-wrapper .artist {
+    display: inline-block;
+    width: 70px;
+    text-align: center;
+    margin-right: 15px;
+}
+.artist-wrapper .artist .artist-pic {
+    width: 70px;
+    height: 100px;
+}
+.artist-wrapper .artist .artist-name {
+    text-align: center;
+}
+
+.comment {
+
+}
+.comment .comment-user-pic {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.comment .comment-user-pic img {
+    width: 100%;
+}
+.comment .comment-cont {
+    padding-left: 10px;
+}
+.comment .comment-cont .comment-name {
+
+}
+.comment .comment-cont .comment-msg {
+
+}
