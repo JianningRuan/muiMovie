@@ -16,21 +16,27 @@
 	<h1 class="mui-title">Top250</h1>
 </header>
 <div class="mui-content">
-	<div id="refreshContainer" class="mui-scroll-wrapper">
+	<div class="mui-segmented-control mui-segmented-control-inverted">
+	    <a class="mui-control-item mui-active" href="#item1">Top1-50</a>
+	    <a class="mui-control-item" href="#item2">51-100</a>
+	    <a class="mui-control-item" href="#item3">101-150</a>
+	    <a class="mui-control-item" href="#item4">151-200</a>
+	    <a class="mui-control-item" href="#item5">201-250</a>
+	</div>
+	<!--<div id="refreshContainer" class="mui-scroll-wrapper">
 		<div class="mui-scroll">
-			<!--这里放置真实显示的DOM内容-->
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell">
-					
+					<div style="height: 2000px;"></div>
 				</li>
 			</ul>
 		</div>
-	</div>
+	</div>-->
 
 </div>
 <script src="../js/mui.min.js"></script>
 <script type="text/javascript">
-	mui.init({
+	/*mui.init({
 		pullRefresh : {
 			container: '#refreshContainer',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
 			up : {
@@ -43,6 +49,19 @@
 				} //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
 			}
 		}
+	})*/
+    mui.init({
+		subpages:[{
+			url:'./../component/ranking-list.html',
+			id:'ranking-list',
+			styles:{
+				top:'90px',//mui标题栏默认高度为45px；
+				bottom:'0px'//默认为0px，可不定义；
+			}
+		}]
+    });
+	mui.plusReady(function(){
+		// mui('#refreshContainer').scroll();
 	})
 </script>
 </body>
