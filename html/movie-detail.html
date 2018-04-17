@@ -11,43 +11,48 @@
 	</head>
 
 	<body>
-	<div>
+	<div id="app">
 		<header class="mui-bar mui-bar-nav mui-bar-transparent">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 		    <h1 class="mui-title">电影</h1>
 		</header>
 		<div class="mui-content">
 			<div class="top-image-block">
-				<img />
+				<img :src='images'/>
 			</div>
 			<div class="movie-msg flex f-align-center">
 				<div class="flex1">
-					<div class="dark-big mui-ellipsis">巨兽</div>
-					<div class="grey-micro mui-ellipsis">2018 / 动作 / 3d</div>
-					<div class="grey-micro mui-ellipsis">原名： big most</div>
-					<div class="grey-micro mui-ellipsis">上映时间： 2018年12月11日</div>
+					<div class="dark-big mui-ellipsis">{{title}}</div>
+					<div class="grey-micro mui-ellipsis">{{year}} / {{genres.join(' / ')}}</div>
+					<div class="grey-micro mui-ellipsis">原名： {{originalTitle}}</div>
+					<div class="grey-micro mui-ellipsis">上映时间： {{year}}年</div>
 					<div class="grey-micro mui-ellipsis">片长： 107分钟</div>
 				</div>
-				<div class="score-box">
+				<div class="score-box flex flex-c f-justify-center">
 					<div class="grey-micro">豆瓣评分</div>
-					<div class="dark-big">6.8</div>
-					<div class="grey-micro">17888人</div>
+					<div class="dark-big" v-if="rating.average > 0">{{rating.average}}</div>
+					<div class="dark-big" v-else>暂无评分</div>
+					<div class="grey-micro">{{ratingsCount}}人</div>
 				</div>
 			</div>
 			<div class="line"></div>
 			<div class="movie-detail">
-				<div class="grey-small">简介</div>
-				<div class="dark-small mui-ellipsis-4"></div>
+				<div class="grey-small detail-title">简介</div>
+				<div class="dark-small mui-ellipsis-4">{{summary}}</div>
 
-				<div class="grey-small">影人</div>
+				<div class="grey-small detail-title">影人</div>
 				<div class="artist-wrapper">
 					<div class="artist">
-						<img class="artist-pic" />
-						<div class="artist-name mui-ellipsis"></div>
+						<img class="artist-pic" v-if="directors.avatars && directors.avatars.small" :src='directors.avatars.small' />
+						<div class="artist-name mui-ellipsis dark-small">{{directors.name}}</div>
+					</div>
+					<div class="artist" v-for="artist in casts" @tap="goArtistDetail(artist)">
+						<img class="artist-pic" v-if="artist.avatars && artist.avatars.small" :src="artist.avatars.small" />
+						<div class="artist-name mui-ellipsis dark-small">{{artist.name}}</div>
 					</div>
 				</div>
 
-				<div class="grey-small">评论</div>
+				<div class="grey-small detail-title">评论</div>
 				<ul class="mui-table-view">
 					<li class="mui-table-view-cell flex comment">
 						<div class="comment-user-pic">
@@ -63,12 +68,72 @@
 		</div>
 	</div>
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/vue.min.js"></script>
 		<script type="text/javascript">
 			mui.init();
 			
+			function movieDate(){
+				return {
+					title: '', // 标题
+					year: '', // 年份
+					images: '', // 图片
+					countries: '', // 国家
+					genres: [], // 类型
+					casts: [], // 演员
+					originalTitle: '', // 原标题
+					summary: '', // 简介
+					directors: {}, // 导演
+					rating: {}, //得分
+					ratingsCount: 0 // 评分人数
+				}
+			}
+			
+			var vue = new Vue({
+				el: '#app',
+				data: movieDate(),
+				methods: {
+					resetData: function(){
+						Object.assign(this.$data, movieDate());
+					},
+					goArtistDetail: function(item){
+						mui.openWindow({
+							url: './cast-detail.html',
+							id: 'cast-detail',
+							extras: {
+								castId: item.id
+							}
+						})
+					}
+				}
+			})
+			
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();
+				//监听退出前清空数据
+				self.addEventListener('hide', function(e){
+					window.scrollTo(0, 0);
+					vue.resetData();
+				}, false)
+			})
+			
 			window.addEventListener('movieId', function(event){
 				var id = event.detail.id;
-				console.log(id);
+				plus.nativeUI.showWaiting();
+				mui.getJSON('http://api.douban.com/v2/movie/subject/' + id, function(res){
+					vue.title = res.title;
+					vue.year = res.year;
+					vue.images = res.images.small;
+					vue.countries = res.countries;
+					vue.genres = res.genres;
+					vue.casts = res.casts;
+					vue.originalTitle = res.original_title;
+					vue.summary = res.summary;
+					vue.directors = res.directors[0];
+					vue.rating = res.rating;
+					vue.ratingsCount = res.ratings_count;
+					
+					plus.nativeUI.closeWaiting();
+				})
 			})
 		</script>
 	</body>

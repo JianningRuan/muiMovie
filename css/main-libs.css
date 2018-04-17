@@ -1,0 +1,20 @@
+html,body {
+	background-color: #fff;
+}
+
+.rank-title {
+	padding-left: 15px;
+	padding-right: 15px;
+	line-height: 40px;
+}
+
+.movie-pic {
+	width: 76px;
+	/*height: 108px;*/
+	display: block;
+	margin-right: 15px;
+}
+.ranking-more {
+	line-height: 30px;
+	text-align: center;
+}

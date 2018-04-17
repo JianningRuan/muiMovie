@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<link href="../css/movie-detail.css" rel="stylesheet" />
+	</head>
+
+	<body>
+	<div id="app">
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">影人</h1>
+		</header>
+		<div class="mui-content">
+			<div class="top-image-block">
+				<img :src='cover'/>
+			</div>
+			<div class="movie-msg">
+				<div class="dark-big mui-ellipsis">{{name}}</div>
+				<div class="grey-micro mui-ellipsis">原名： {{nameEn}}</div>
+				<div class="grey-micro mui-ellipsis">性别： {{gender}}</div>
+				<div class="grey-micro mui-ellipsis">地区： {{bornPlace}}</div>
+			</div>
+			<div class="line"></div>
+			<div class="movie-detail">
+				<div class="grey-small detail-title">相关作品</div>
+				<div class="artist-wrapper">
+					<div class="artist" v-for="work in works" @tap="openMovie(work)">
+						<img class="artist-pic" v-if="work.subject && work.subject.images" :src='work.subject.images.small' />
+						<div class="artist-name mui-ellipsis dark-small">{{work.subject.title}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			
+			var prePage;
+			function castData(){
+				return {
+					name: '',
+					works: [],
+					gender: '',
+					cover: '',
+					nameEn: '',
+					bornPlace: ''
+				}
+			}
+			
+			var vue = new Vue({
+				el: '#app',
+				data: castData()
+			});
+			
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();
+				var castId = self.castId;
+				plus.nativeUI.showWaiting('加载中', {
+					width: '100px',
+					height: '100px'
+				});
+				mui.getJSON('https://api.douban.com/v2/movie/celebrity/' + castId, function(res){
+					vue.name = res.name;
+					vue.works = res.works;
+					vue.gender = res.gender;
+					vue.cover = res.avatars.small;
+					vue.nameEn = res.name_en;
+					vue.bornPlace = res.born_place;
+					plus.nativeUI.closeWaiting();
+				})
+				
+				prePage = mui.preload({
+					id: 'movie-detail',
+					url: './movie-detail.html'
+				})
+			})
+			
+			function openMovie(item){
+				mui.fire(prePage, 'movieId', {
+					id: item.subject.id
+				})
+				mui.openWindow({
+					id: 'movie-detail'
+				})
+			}
+		</script>
+	</body>
+
+</html>

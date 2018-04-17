@@ -118,13 +118,10 @@
 					id:'movie-detail',
 					url:'./html/movie-detail.html'
 				});
-				console.log(detailPage);
 
 				mui('.search-wrapper')[0].addEventListener('tap', function(){
-					console.log('sousuo')
 					/*let aa = plus.camera.getCamera();
 					 aa.captureImage(function(p){
-					 console.log(p)
 					 })*/
 				});
 
@@ -142,8 +139,6 @@
 			});
 
 			function goDetail(item){
-				console.log(item);
-				console.log(detailPage);
 				mui.fire(detailPage, 'movieId', {
 					id: item.id
 				});

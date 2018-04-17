@@ -422,6 +422,20 @@
 				],
 				"refer": [],
 				"priority": 0
+			},
+			"html/movie-detail.html": {
+				"resources": [],
+				"refer": [
+					"html/cast-detail.html"
+				],
+				"priority": 0
+			},
+			"html/main-libs.html": {
+				"resources": [],
+				"refer": [
+					"html/top-ranking.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {
