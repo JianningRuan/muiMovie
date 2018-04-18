@@ -1,22 +1,82 @@
 <!doctype html>
 <html>
 
-	<head>
-		<meta charset="UTF-8">
-		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="../css/mui.min.css" rel="stylesheet" />
-	</head>
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link href="../css/mui.min.css" rel="stylesheet" />
+	<link href="../css/style.css" rel="stylesheet" />
+	<link href="../css/box-ranking.css" rel="stylesheet" />
+</head>
 
-	<body>
-		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-		    <h1 class="mui-title">北美票房榜</h1>
-		</header>
-		<script src="../js/mui.min.js"></script>
-		<script type="text/javascript">
-			mui.init()
-		</script>
-	</body>
+<body>
+<div id="app">
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">北美票房榜 {{rankingDate}}</h1>
+	</header>
+	<div class="mui-scroll-wrapper list-post" id="movie-list">
+		<div class="mui-scroll">
+			<!--这里放置真实显示的DOM内容-->
+			<div class="movie-wrapper" v-for="(item, index) in movie">
+				<div class="ranking-num">{{item.rank}}</div>
+				<div class="movie-box flex" @tap="goDetail(item)">
+					<img class="movie-pic" v-if="item.subject && item.subject.images" :src="item.subject.images.small" />
+					<div class="movie-cont flex1">
+						<div class="dark-medium">{{item.subject.title}}</div>
+						<div class="grey-small">{{item.subject.year}} / {{item.subject.genres.join(' ')}} / {{item.subject.directors[0].name}} / <span v-for="cast in item.subject.casts">{{cast.name}} </span></div>
+					</div>
+				</div>
+				<div class="m-watch-num grey-small">票房{{item.box}}美元</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="../js/mui.min.js"></script>
+<script src="../js/vue.min.js"></script>
+<script type="text/javascript">
+	mui.init();
+	var detailPage;
+	var vue = new Vue({
+		el: '#app',
+		data: {
+			rankingDate: '',
+			movie: []
+		}
+	});
+	mui.plusReady(function(){
+		detailPage = plus.webview.getWebviewById('movie-detail');
+		if (!detailPage){
+			detailPage = mui.preload({
+				id: 'movie-detail',
+				url: './movie-detail.html'
+			})
+		}
+		plus.nativeUI.showWaiting('加载中...', {
+			width: '100px',
+			height: '100px'
+		});
+		mui.getJSON('https://api.douban.com/v2/movie/us_box', function(res){
+			console.log(res.title)
+			vue.movie = res.subjects;
+			vue.rankingDate = res.date;
+			plus.nativeUI.closeWaiting();
+		})
+		
+		mui('#movie-list').scroll();
+	})
+	
+	function goDetail(item){
+		var id = item.subject.id;
+		mui.fire(detailPage, 'movieId', {
+			id: id
+		})
+		mui.openWindow({
+			id: 'movie-detail'
+		})
+	}
+</script>
+</body>
 
 </html>

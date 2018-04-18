@@ -1,0 +1,15 @@
+.search-wrapper {
+	padding: 15px;
+}
+.search-wrapper .input-cancel {
+	padding-left: 10px;
+	padding-right: 10px;
+	line-height: 38px;
+}
+
+.history-search-tit {
+	height: 40px;
+	background: #CCCCCC;
+	padding-left: 15px;
+	padding-right: 15px;
+}

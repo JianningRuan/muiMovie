@@ -154,7 +154,7 @@
 						},{
 							"tag": "font",
 							"id": "newsIcon",
-							"text": "\ue201",
+							"text": "\ue562",
 							"position": {
 								"top": "4px",
 								"left": "33%",
@@ -361,7 +361,9 @@
 					"html/tab-webview-subpage-contact.html",
 					"html/new-webview.html",
 					"html/main-setting.html",
-					"html/movie-detail.html"
+					"html/movie-detail.html",
+					"component/list.html",
+					"html/search.html"
 				],
 				"priority": 0
 			},
@@ -434,7 +436,8 @@
 				"resources": [],
 				"refer": [
 					"html/top-ranking.html",
-					"html/box-ranking.html"
+					"html/box-ranking.html",
+					"html/movie-detail.html"
 				],
 				"priority": 0
 			},
@@ -444,6 +447,13 @@
 					"html/../component/ranking-list.html"
 				],
 				"refer": [],
+				"priority": 0
+			},
+			"component/list.html": {
+				"resources": [],
+				"refer": [
+					"component/../html/movie-detail.html"
+				],
 				"priority": 0
 			}
 		},

@@ -1,153 +1,124 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>首页</title>
-		<script src="js/mui.min.js"></script>
-		<link href="css/mui.css" rel="stylesheet" />
-		<link href="css/style.css" rel="stylesheet" />
-		<link href="css/index.css" rel="stylesheet" />
-		<style>
-			html,
-			body {
-				background-color: #fff;
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title>首页</title>
+	<script src="js/mui.min.js"></script>
+	<link href="css/mui.css" rel="stylesheet" />
+	<link href="css/style.css" rel="stylesheet" />
+	<link href="css/index.css" rel="stylesheet" />
+	<style>
+		html,
+		body {
+			background-color: #fff;
+		}
+	</style>
+</head>
+
+<body>
+<div class="mui-content" id="app">
+	<!--搜索框-->
+	<div class="search-wrapper">
+		<span class="mui-icon mui-icon-search"></span>
+		<span>电影/电视剧/影人</span>
+	</div>
+	<!--搜索框-end-->
+</div>
+<script src="js/util.js"></script>
+<script type="text/javascript">
+	//var detailPage;
+
+	mui.init({
+		swipeBack: true, //启用右滑关闭功能
+		subpages: [{
+			url: './component/list.html',
+			id: 'list',
+			styles: {
+				top: '60px',
+				bottom: '50px'
 			}
-		</style>
-	</head>
+		}]
+	});
 
-	<body>
-		<div class="mui-content" id="app">
-			<!--搜索框-->
-			<div class="search-wrapper">
-				<span class="mui-icon mui-icon-search"></span>
-				<span>电影/电视剧/影人</span>
-			</div>
-			<!--搜索框-end-->
-			<div id="refreshContainer" class="list-post mui-scroll-wrapper">
-				<div class="mui-scroll">
-					<ul class="mui-table-view mui-table-view-chevron">
-						<li class="mui-table-view-cell" v-for="item in movie" @tap="goDetail(item)">
-							<img class="movie-pic mui-pull-left" :src="item.images.small" />
-							<div class="mui-ellipsis dark-big">{{item.title}}</div>
-							<div class="mui-ellipsis">
-								<span class="grey-micro">评分：</span>
-								<span v-if="item.rating.average > 0" class="orange-micro">{{item.rating.average}}</span>
-								<span v-else class="orange-micro">暂无评分</span>
-							</div>
-							<div class="mui-ellipsis grey-micro">类型： {{item.genres.join('/')}}</div>
-							<div class="mui-ellipsis grey-micro">导演： <span v-for="directors in item.directors">{{directors.name}}&nbsp;</span></div>
-							<div class="mui-ellipsis grey-micro">演员： <span v-for="casts in item.casts">{{casts.name}}&nbsp;</span></div>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		<script src="js/vue.min.js"></script>
-		<script src="js/util.js"></script>
-		<script type="text/javascript">
-			var detailPage;
+	mui.plusReady(function() {
+		var self = plus.webview.currentWebview();
 
-			let vue = new Vue({
-				el: '#app',
-				data: {
-					movie: []
-				}
-			});
+		// 创建子webview窗口 并初始化
+		var aniShow = {};
+		util.initSubpage(aniShow);
 
+		var nview = plus.nativeObj.View.getViewById('tabBar'),
+				activePage = plus.webview.currentWebview(),
+				targetPage,
+				subpages = util.options.subpages,
+				pageW = window.innerWidth,
+				currIndex = 0;
 
-			mui.init({
-				swipeBack: true //启用右滑关闭功能
-			});
-
-			mui.plusReady(function() {
-				var self = plus.webview.currentWebview();
-
-				// 创建子webview窗口 并初始化
-				var aniShow = {};
-				util.initSubpage(aniShow);
-
-				var nview = plus.nativeObj.View.getViewById('tabBar'),
-					activePage = plus.webview.currentWebview(),
-					targetPage,
-					subpages = util.options.subpages,
-					pageW = window.innerWidth,
-					currIndex = 0;
-
-				/**
-				 * 根据判断view控件点击位置判断切换的tab
-				 */
-				nview.addEventListener('click', function(e) {
-					var clientX = e.clientX;
-					if(clientX > 0 && clientX <= parseInt(pageW * 0.33)) {
-						currIndex = 0;
-					} else if(clientX > parseInt(pageW * 0.33) && clientX <= parseInt(pageW * 0.67)) {
-						currIndex = 1;
-					} else {
-						currIndex = 2;
-					}
-					// 匹配对应tab窗口
-					if(currIndex > 0) {
-						targetPage = plus.webview.getWebviewById(subpages[currIndex - 1]);
-					} else {
-						targetPage = plus.webview.currentWebview();
-					}
-
-					if(targetPage == activePage) {
-						return;
-					}
-
-					if(currIndex !== 3) {
-						//底部选项卡切换
-						util.toggleNview(currIndex);
-						// 子页面切换
-						util.changeSubpage(targetPage, activePage, aniShow);
-						//更新当前活跃的页面
-						activePage = targetPage;
-					} else {
-						//第四个tab 打开新窗口
-						plus.webview.open('html/new-webview.html', 'new', {}, 'slide-in-right', 200);
-					}
-				});
-
-
-				/**/
-				//预加载详细页面
-				detailPage = mui.preload({
-					id:'movie-detail',
-					url:'./html/movie-detail.html'
-				});
-
-				mui('.search-wrapper')[0].addEventListener('tap', function(){
-					/*let aa = plus.camera.getCamera();
-					 aa.captureImage(function(p){
-					 })*/
-				});
-
-				mui('.mui-scroll-wrapper').scroll({
-					indicators:false
-				});
-
-				mui.getJSON('https://api.douban.com/v2/movie/in_theaters', {
-					start: vue.movie.length,
-					count: 20
-				}, function(res){
-					vue.movie = vue.movie.concat(res.subjects);
-				})
-
-			});
-
-			function goDetail(item){
-				mui.fire(detailPage, 'movieId', {
-					id: item.id
-				});
-				//打开
-				mui.openWindow({
-					id:'movie-detail'
-				});
+		/**
+		 * 根据判断view控件点击位置判断切换的tab
+		 */
+		nview.addEventListener('click', function(e) {
+			var clientX = e.clientX;
+			if(clientX > 0 && clientX <= parseInt(pageW * 0.33)) {
+				currIndex = 0;
+			} else if(clientX > parseInt(pageW * 0.33) && clientX <= parseInt(pageW * 0.67)) {
+				currIndex = 1;
+			} else {
+				currIndex = 2;
 			}
-		</script>
-	</body>
+			// 匹配对应tab窗口
+			if(currIndex > 0) {
+				targetPage = plus.webview.getWebviewById(subpages[currIndex - 1]);
+			} else {
+				targetPage = plus.webview.currentWebview();
+			}
+
+			if(targetPage == activePage) {
+				return;
+			}
+
+			//底部选项卡切换
+			util.toggleNview(currIndex);
+			// 子页面切换
+			util.changeSubpage(targetPage, activePage, aniShow);
+			//更新当前活跃的页面
+			activePage = targetPage;
+			// plus.webview.open('html/new-webview.html', 'new', {}, 'slide-in-right', 200);
+		});
+
+
+		/**/
+		//预加载详细页面
+		/*detailPage = mui.preload({
+		 id:'movie-detail',
+		 url:'./html/movie-detail.html'
+		 });*/
+
+		mui('.search-wrapper')[0].addEventListener('tap', function(){
+			mui.openWindow({
+				id: 'search',
+				url: './html/search.html'
+			});
+		});
+
+		mui('.mui-scroll-wrapper').scroll({
+			indicators:false
+		});
+
+	});
+
+	/*function goDetail(item){
+	 mui.fire(detailPage, 'movieId', {
+	 id: item.id
+	 });
+	 //打开
+	 mui.openWindow({
+	 id:'movie-detail'
+	 });
+	 }*/
+</script>
+</body>
 
 </html>

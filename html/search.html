@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<link href="../css/search.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<div class="mui-content" id="app">
+			<div class="search-wrapper flex">
+				<div class="mui-search mui-input-row flex1">
+					<input id="search-input" class="mui-input-clear" type="search" placeholder="电影/电视剧/影人" />
+				</div>
+				<div class="input-cancel grey-medium" id="cancel">取消</div>
+			</div>
+			<!--历史记录-->
+			<div class="history-search-tit flex f-justify-between f-align-center grey-medium">
+				<span>历史记录</span>
+				<span>清除</span>
+			</div>
+			<ul class="mui-table-view">
+			    <li class="mui-table-view-cell grey-medium">666</li>
+			    <li class="mui-table-view-cell grey-medium">777</li>
+			    <li class="mui-table-view-cell grey-medium">999</li>
+			</ul>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+				//document.getElementById('search-input').focus();
+				mui('#cancel')[0].addEventListener('tap', ()=>{
+					mui.back();
+				})
+			})
+		</script>
+	</body>
+
+</html>

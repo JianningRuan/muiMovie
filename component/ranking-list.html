@@ -1,49 +1,90 @@
 <!doctype html>
 <html>
 
-	<head>
-		<meta charset="UTF-8">
-		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="../css/mui.min.css" rel="stylesheet" />
-	</head>
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link href="../css/mui.min.css" rel="stylesheet" />
+	<link href="../css/style.css" rel="stylesheet" />
+	<link href="../css/index.css" rel="stylesheet" />
+</head>
 
-	<body>
-		<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
-		    <div class="mui-scroll">
-		        <!--这里放置真实显示的DOM内容-->
-		        <ul class="mui-table-view">
-		                <li class="mui-table-view-cell">
-		                	<div style="height: 100px;">11</div>
-		                	<div style="height: 100px;">11</div>
-		                	<div style="height: 100px;">11</div>
-		                	<div style="height: 100px;">11</div>
-		                	<div style="height: 100px;">11</div>
-		                	<div style="height: 100px;">11</div>
-		                	<div style="height: 100px;">11</div>
-		                	<div style="height: 100px;">11</div>
-		                	<div style="height: 100px;">11</div>
-		                </li>
-		    </div>
-		</div>
-		
-		<script src="../js/mui.min.js"></script>
-		<script type="text/javascript">
-			mui.init({
-		pullRefresh : {
-			container: '#refreshContainer',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
-			up : {
-				height:50,//可选.默认50.触发上拉加载拖动距离
-				auto:false,//可选,默认false.自动上拉加载一次
-				contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
-				contentnomore:'没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
-				callback : function(){
-					console.log('aaa');
-				} //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-			}
+<body>
+<div id="refreshContainer" class="mui-scroll-wrapper">
+	<div class="mui-scroll">
+		<ul class="mui-table-view mui-table-view-chevron">
+			<li class="mui-table-view-cell" v-for="item in movie" @tap="goDetail(item)">
+				<img class="movie-pic mui-pull-left" :src="item.images.small" />
+				<div class="mui-ellipsis dark-big">{{item.title}}</div>
+				<div class="mui-ellipsis">
+					<span class="grey-micro">评分：</span>
+					<span v-if="item.rating.average > 0" class="orange-micro">{{item.rating.average}}</span>
+					<span v-else class="orange-micro">暂无评分</span>
+				</div>
+				<div class="mui-ellipsis grey-micro">类型： {{item.genres.join('/')}}</div>
+				<div class="mui-ellipsis grey-micro">导演： <span v-for="directors in item.directors">{{directors.name}}&nbsp;</span></div>
+				<div class="mui-ellipsis grey-micro">演员： <span v-for="casts in item.casts">{{casts.name}}&nbsp;</span></div>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<script src="../js/mui.min.js"></script>
+<script src="../js/vue.min.js"></script>
+<script type="text/javascript">
+	mui.init();
+	var muiScroll;
+	var vue = new Vue({
+		el: '#refreshContainer',
+		data: {
+			allMovie: [[], [], [], [], []],
+			movie: []
 		}
 	})
-		</script>
-	</body>
+	
+	mui.plusReady(function(){
+		muiScroll = mui('#refreshContainer').scroll();
+		
+		var self = plus.webview.currentWebview();
+		var index = self.index;
+		console.log('dangqianshi' + index);
+		getRankingData(index);
+	})
+	
+	window.addEventListener('getIndex', function(event){
+		var index = event.detail.index;
+		console.log(index);
+		getRankingData(index);
+	})
+	
+	// 获取榜单数据
+	function getRankingData(index){
+		if (vue.allMovie[index].length === 0){
+			plus.nativeUI.showWaiting();
+			var start = index * 50;
+			mui.getJSON('https://api.douban.com/v2/movie/top250', {
+				start: start,
+				count: 50
+			}, function(res){
+				vue.allMovie[index] = res.subjects;
+				vue.movie = res.subjects;
+				plus.nativeUI.closeWaiting();
+			})
+		}else {
+			vue.movie = vue.allMovie[index];
+		}
+		muiScroll.scrollTo(0,0,100);
+	}
+	
+	function goDetail(item){
+		var id = item.id;
+		var topRankingPage = plus.webview.getWebviewById('top-ranking');
+		mui.fire(topRankingPage, 'getMovieId', {
+			id: id
+		})
+	}
+</script>
+</body>
 
 </html>

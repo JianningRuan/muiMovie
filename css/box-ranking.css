@@ -1,0 +1,29 @@
+.list-post {
+	top: 48px;
+}
+.movie-wrapper {
+	padding: 30px;
+}
+.movie-wrapper .ranking-num {
+	text-align: center;
+	font-size: 12px;
+	color: #CF2D28;
+	margin-bottom: 10px;
+}
+.movie-wrapper .movie-box {
+	padding: 15px;
+	/*border: 1px solid #a2a2a2;*/
+	box-shadow: 0 0 1px #A2A2A2;
+	
+}
+.movie-wrapper .movie-box .movie-pic {
+	width: 70px;
+	height: 95px;
+	margin-right: 10px;
+}
+.movie-wrapper .movie-box .movie-cont {
+	
+}
+.movie-wrapper .m-watch-num {
+	line-height: 40px;
+}
