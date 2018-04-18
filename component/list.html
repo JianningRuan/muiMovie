@@ -80,7 +80,8 @@
 			count: 20
 		}, function(res){
 			vue.movie = res.subjects;
-			mui('#refreshContainer').pullRefresh().endPulldown();
+			mui('#refreshContainer').pullRefresh()._endPulldownToRefresh();
+			mui('#refreshContainer').pullRefresh().refresh(true);
 		})
 	}
 	// 请求下一页数据
@@ -91,7 +92,7 @@
 			count: 20
 		}, function(res){
 			vue.movie = vue.movie.concat(res.subjects);
-			mui('#refreshContainer').pullRefresh().endPullupToRefresh(vue.movie.length > res.total);
+			mui('#refreshContainer').pullRefresh().endPullupToRefresh(vue.movie.length >= res.total);
 		})
 	}
 	
