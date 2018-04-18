@@ -33,11 +33,30 @@
 		<script src="../js/vue.min.js"></script>
 		<script type="text/javascript">
 			mui.init();
+			var vue = new Vue({
+				el: '#app',
+				data: {
+					records: [] // 历史记录
+				}
+			})
 			mui.plusReady(function(){
-				//document.getElementById('search-input').focus();
 				mui('#cancel')[0].addEventListener('tap', ()=>{
 					mui.back();
 				})
+			})
+			
+			Array.prototype.contains = function(val){
+				
+			}
+			
+			document.addEventListener('keydown', function(event){
+				var e = event || window.event || arguments.caller.arguments[0];
+				console.log(event.keyCode)
+				if (e && e.keyCode === 13){
+					let val = mui('#search-input')[0].value;
+					console.log(val);
+					
+				}
 			})
 		</script>
 	</body>
