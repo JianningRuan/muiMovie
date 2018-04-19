@@ -10,7 +10,7 @@
 		"name": "1.0",/*应用版本名称*/
 		"code": ""
 	},
-	"description": "nativeObj模式底部选项卡 + 底部悬浮大球图标 + webview模式子窗口官方示例",/*应用描述信息*/
+	"description": "这是一个在于观看慕课网教程后，借用豆瓣Api制作的一个仿豆瓣App",/*应用描述信息*/
 	"icons": {
 		"72": "icon.png"
 	},
