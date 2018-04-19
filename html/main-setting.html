@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Hello MUI</title>
+	<title>设置</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -17,29 +17,28 @@
 <header class="mui-bar mui-bar-nav">
 	<h1 class="mui-title">设置</h1>
 </header>
-<div class="mui-content">
+<div class="mui-content" id="app">
 	<div id="list-scroll" class="mui-scroll-wrapper top-post">
 		<div class="mui-scroll">
-			<!--这里放置真实显示的DOM内容-->
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell dark-medium">
 					<a class="mui-navigate-right">
 						意见反馈
 					</a>
 				</li>
-				<li class="mui-table-view-cell dark-medium">
+				<li class="mui-table-view-cell dark-medium" id="cache">
 					<a class="mui-navigate-right">
 						清除缓存
 					</a>
 				</li>
-				<li class="mui-table-view-cell dark-medium">
+				<li class="mui-table-view-cell dark-medium" id="about">
 					<a class="mui-navigate-right">
 						关于我们
 					</a>
 				</li>
-				<li class="mui-table-view-cell dark-medium" id="camera-btn">
+				<li class="mui-table-view-cell dark-medium" id="list">
 					<a class="mui-navigate-right">
-						启动相机
+						展示图片
 					</a>
 				</li>
 			</ul>
@@ -48,19 +47,67 @@
 </div>
 </body>
 <script src="../js/mui.min.js"></script>
+<script src="../js/vue.min.js"></script>	
 <script>
 	mui.init({
 		swipeBack:true //启用右滑关闭功能
 	});
 	let camera;
+	let vue = new Vue({
+		el: '#app',
+		data: {
+			imagesUrl: ''
+		}
+	})
 	mui.plusReady(function(){
 		mui('#list-scroll').scroll();
 	})
-	mui('#camera-btn')[0].addEventListener('tap', function(){
+	// 关于我们
+	mui('#about')[0].addEventListener('tap', function(){
+		mui.openWindow({
+			id: 'about',
+			url: './about.html'
+		})
+	})
+	// 清除缓存
+	mui('#cache')[0].addEventListener('tap', function(){
+		plus.cache.clear(()=>{
+			mui.toast('清除缓存成功');
+		});
+	})
+	// 弹出列表选择调用摄像头或相册
+	mui('#list')[0].addEventListener('tap', function(){
+		let actionSheetStyle = {
+			title: '图片来源',
+			cancel: '取消',
+			buttons: [{title:"来自相机"},{title:"来自相册"}]
+		}
+		plus.nativeUI.actionSheet(actionSheetStyle, picFromCallback);
+		function picFromCallback(e){
+			console.log(e.index);
+			if(e.index === 1){ // 打开相机
+				openCamera();
+			}else if(e.index === 2){ // 打开相册
+				openPicList();
+			}
+		}
+	})
+	// 调用摄像头
+	function openCamera(){
 		camera = plus.camera.getCamera();
 		camera.captureImage(function(p){
 			console.log(p);
+			plus.io.resolveLocalFileSystemURL(p, function(entry){
+				console.log(entry);
+				vue.imagesUrl = entry.fullPath;
+			})
 		})
-	})
+	}
+	// 调用相册
+	function openPicList(){
+		plus.gallery.pick(function(e){
+			
+		})
+	}
 </script>
 </html>

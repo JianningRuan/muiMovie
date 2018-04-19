@@ -1,64 +1,122 @@
 <!doctype html>
 <html>
 
-	<head>
-		<meta charset="UTF-8">
-		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="../css/mui.min.css" rel="stylesheet" />
-		<link href="../css/style.css" rel="stylesheet" />
-		<link href="../css/search.css" rel="stylesheet" />
-	</head>
+<head>
+	<meta charset="UTF-8">
+	<title>搜索</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link href="../css/mui.min.css" rel="stylesheet" />
+	<link href="../css/style.css" rel="stylesheet" />
+	<link href="../css/search.css" rel="stylesheet" />
+</head>
 
-	<body>
-		<div class="mui-content" id="app">
-			<div class="search-wrapper flex">
-				<div class="mui-search mui-input-row flex1">
-					<input id="search-input" class="mui-input-clear" type="search" placeholder="电影/电视剧/影人" />
-				</div>
-				<div class="input-cancel grey-medium" id="cancel">取消</div>
-			</div>
-			<!--历史记录-->
-			<div class="history-search-tit flex f-justify-between f-align-center grey-medium">
-				<span>历史记录</span>
-				<span>清除</span>
-			</div>
-			<ul class="mui-table-view">
-			    <li class="mui-table-view-cell grey-medium">666</li>
-			    <li class="mui-table-view-cell grey-medium">777</li>
-			    <li class="mui-table-view-cell grey-medium">999</li>
-			</ul>
+<body>
+<div class="mui-content" id="app">
+	<div class="search-wrapper flex">
+		<div class="mui-search mui-input-row flex1">
+			<input id="search-input" class="mui-input-clear" type="search" placeholder="电影/电视剧/影人" />
 		</div>
-		<script src="../js/mui.min.js"></script>
-		<script src="../js/vue.min.js"></script>
-		<script type="text/javascript">
-			mui.init();
-			var vue = new Vue({
-				el: '#app',
-				data: {
-					records: [] // 历史记录
-				}
-			})
-			mui.plusReady(function(){
-				mui('#cancel')[0].addEventListener('tap', ()=>{
-					mui.back();
-				})
-			})
-			
-			Array.prototype.contains = function(val){
-				
+		<div class="input-cancel grey-medium" id="cancel">取消</div>
+	</div>
+	<!--历史记录-->
+	<div class="history-search-tit flex f-justify-between f-align-center grey-medium">
+		<span>历史记录</span>
+		<span @tap="clearHistory">清除</span>
+	</div>
+	<ul class="mui-table-view">
+		<li class="mui-table-view-cell grey-medium" v-for="item in records" @tap="openResult(item)">{{item}}</li>
+	</ul>
+</div>
+<script src="../js/mui.min.js"></script>
+<script src="../js/vue.min.js"></script>
+<script type="text/javascript">
+	mui.init();
+	var vue = new Vue({
+		el: '#app',
+		data: {
+			records: [] // 历史记录
+		},
+		methods: {
+			clearHistory(){
+				plus.storage.getItem('history', '');
+				this.records = [];
+			},
+			openResult(item){
+				mui.openWindow({
+					id: 'search-result',
+					url: './search-result.html',
+					extras: {
+						name: item
+					}
+				});
+				this.records.remove(item);
+				this.records.splice(0, 0, item);
+				plus.storage.setItem('history', this.records.toString());
 			}
-			
-			document.addEventListener('keydown', function(event){
-				var e = event || window.event || arguments.caller.arguments[0];
-				console.log(event.keyCode)
-				if (e && e.keyCode === 13){
-					let val = mui('#search-input')[0].value;
-					console.log(val);
-					
+		}
+	});
+	mui.plusReady(function(){
+		// 获取缓存里边的历史搜索记录
+		let history = plus.storage.getItem('history');
+		if(history !== ''){
+			vue.records = history.split(',');
+		}
+	});
+
+	mui('#cancel')[0].addEventListener('tap', ()=>{
+		mui.back();
+	})
+
+	// 给数组增加3个方法
+	// 查找数组中是否包含指定元素
+	Array.prototype.contains = function(val){
+		var i = this.length;
+		while(i--){
+			if(this[i] == val){
+				return true
+			}
+		}
+		return false
+	};
+	// 查找数组中指定元素在什么位置
+	Array.prototype.indexOf = function(val){
+		for (var i = 0, l = this.length; i < l; i++) {
+			if(this[i] === val){
+				return i;
+				break
+			}
+		}
+		return -1;
+	};
+	// 删除数组中的指定元素
+	Array.prototype.remove = function(val){
+		var index = this.indexOf(val);
+		if(index > -1){
+			this.splice(index, 1);
+		}
+	};
+	// 监听软键盘enter事件
+	document.addEventListener('keydown', function(event){
+		var e = event || window.event || arguments.caller.arguments[0];
+		if (e && e.keyCode === 13){
+			let val = mui('#search-input')[0].value;
+			if(vue.records.contains(val)){
+				vue.records.remove(val);
+			}
+			vue.records.splice(0, 0, val);
+			plus.storage.setItem('history', vue.records.toString());
+
+			//进入搜索页
+			mui.openWindow({
+				id: 'search-result',
+				url: './search-result.html',
+				extras: {
+					name: val
 				}
 			})
-		</script>
-	</body>
+		}
+	})
+</script>
+</body>
 
 </html>

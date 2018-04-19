@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title></title>
+		<title>电影</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.min.css" rel="stylesheet" />
 		<link href="../css/style.css" rel="stylesheet" />
@@ -108,6 +108,7 @@
 			})
 			
 			mui.plusReady(function(){
+				plus.navigator.setStatusBarBackground('#3C3C3C');
 				var self = plus.webview.currentWebview();
 				//监听退出前清空数据
 				self.addEventListener('hide', function(e){

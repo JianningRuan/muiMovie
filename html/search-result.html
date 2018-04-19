@@ -1,18 +1,109 @@
 <!doctype html>
 <html>
 
-	<head>
-		<meta charset="UTF-8">
-		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="../css/mui.min.css" rel="stylesheet" />
-	</head>
+<head>
+	<meta charset="UTF-8">
+	<title>搜索结果</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<link href="../css/mui.min.css" rel="stylesheet" />
+	<link href="../css/style.css" rel="stylesheet" />
+	<link href="../css/index.css" rel="stylesheet" />
+</head>
 
-	<body>
-		<script src="../js/mui.min.js"></script>
-		<script type="text/javascript">
-			mui.init()
-		</script>
-	</body>
+<body>
+<div id="app">
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">搜索结果</h1>
+	</header>
+	<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+		<div class="mui-scroll">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" v-for="item in movie" @tap="goDetail(item)">
+					<img class="movie-pic mui-pull-left" :src="item.images.small" />
+					<div class="mui-ellipsis dark-big">{{item.title}}</div>
+					<div class="mui-ellipsis">
+						<span class="grey-micro">评分：</span>
+						<span v-if="item.rating.average > 0" class="orange-micro">{{item.rating.average}}</span>
+						<span v-else class="orange-micro">暂无评分</span>
+					</div>
+					<div class="mui-ellipsis grey-micro">类型： {{item.genres.join('/')}}</div>
+					<div class="mui-ellipsis grey-micro">导演： <span v-for="directors in item.directors">{{directors.name}}&nbsp;</span></div>
+					<div class="mui-ellipsis grey-micro">演员： <span v-for="casts in item.casts">{{casts.name}}&nbsp;</span></div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<script src="../js/mui.min.js"></script>
+<script src="../js/vue.min.js"></script>
+<script type="text/javascript">
+	mui.init({
+		pullRefresh: {
+			container:"#refreshContainer",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+			down : {
+				style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+				auto: false,//可选,默认false.首次加载自动上拉刷新一次
+				callback : refreshMovie //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			},
+			up: {
+				auto: true,//可选,默认false.自动上拉加载一次
+				callback :getMoreMovie //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			}
+		}
+	});
+	let vue = new Vue({
+		el: '#app',
+		data: {
+			movie: []
+		}
+	});
+	var name = '';
+	var detailPage;
+	mui.plusReady(function(){
+		//给detailPage赋值,根据ID获取详情页面
+		detailPage = plus.webview.getWebviewById('movie-detail');
+		if(!detailPage){
+			detailPage = mui.preload({
+				id:'movie-detail',
+				url:'./movie-detail.html'
+			});
+		}
+
+		let self = plus.webview.currentWebview();
+		name = self.name;
+	});
+
+	function refreshMovie(){
+		mui.getJSON('https://api.douban.com/v2/movie/search?q=' + name, {
+			start: 0,
+			count: 20
+		}, function(res){
+			vue.movie = res.subjects;
+			mui('#refreshContainer').pullRefresh()._endPulldownToRefresh();
+			mui('#refreshContainer').pullRefresh().refresh(true);
+		})
+	}
+	function getMoreMovie(){
+		mui.getJSON('https://api.douban.com/v2/movie/search?q=' + name, {
+			start: vue.movie.length,
+			count: 20
+		}, function(res){
+			vue.movie = vue.movie.concat(res.subjects);
+			mui('#refreshContainer').pullRefresh().endPullupToRefresh(vue.movie.length >= res.total);
+		})
+	}
+
+	function goDetail(item){
+		mui.fire(detailPage, 'movieId', {
+			id: item.id
+		});
+		//打开
+		mui.openWindow({
+			id:'movie-detail'
+		});
+	}
+</script>
+</body>
 
 </html>
