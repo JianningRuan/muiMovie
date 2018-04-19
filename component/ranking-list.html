@@ -60,6 +60,7 @@
 	
 	// 获取榜单数据
 	function getRankingData(index){
+		vue.movie = vue.allMovie[index];
 		if (vue.allMovie[index].length === 0){
 			plus.nativeUI.showWaiting();
 			var start = index * 50;
@@ -71,8 +72,6 @@
 				vue.movie = res.subjects;
 				plus.nativeUI.closeWaiting();
 			})
-		}else {
-			vue.movie = vue.allMovie[index];
 		}
 		muiScroll.scrollTo(0,0,100);
 	}
