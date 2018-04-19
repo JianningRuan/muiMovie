@@ -58,14 +58,14 @@
 				index: index
 			})
 		})
-	})
+	});
 	
 	window.addEventListener('getMovieId', function(event){
 		var id = event.detail.id;
 		console.log('666' + id);
 		mui.fire(detailPage, 'movieId', {
 			id: id
-		})
+		});
 		mui.openWindow({
 			id: 'movie-detail'
 		})

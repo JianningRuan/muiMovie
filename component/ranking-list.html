@@ -48,13 +48,11 @@
 		
 		var self = plus.webview.currentWebview();
 		var index = self.index;
-		console.log('dangqianshi' + index);
 		getRankingData(index);
 	})
 	
 	window.addEventListener('getIndex', function(event){
 		var index = event.detail.index;
-		console.log(index);
 		getRankingData(index);
 	})
 	

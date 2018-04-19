@@ -74,7 +74,6 @@
 	});
 	// 刷新数据
 	function refreshMovie(){
-		console.log('刷新');
 		mui.getJSON('https://api.douban.com/v2/movie/in_theaters', {
 			start: 0,
 			count: 20
@@ -86,7 +85,6 @@
 	}
 	// 请求下一页数据
 	function getMoreMovie(){
-		console.log(vue.movie.length);
 		mui.getJSON('https://api.douban.com/v2/movie/in_theaters', {
 			start: vue.movie.length,
 			count: 20

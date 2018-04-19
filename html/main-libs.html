@@ -138,12 +138,12 @@
 		});
 		mui.getJSON('https://api.douban.com/v2/movie/coming_soon', function(res){
 			vue.comingSoon = res.subjects;
-		})
+		});
 		prePage = mui.preload({
 			id: 'movie-detail',
 			url: './movie-detail.html'
 		})
-	})
+	});
 
 	document.querySelector('#tab-slider').addEventListener('slide', function(event){
 		if (event.detail.slideNumber === 0){
@@ -151,12 +151,12 @@
 		}else if(event.detail.slideNumber === 1){
 			vue.rankingTit = '北美票房榜'
 		}
-	})
+	});
 
 	function goDetail(id){
 		mui.fire(prePage, 'movieId', {
 			id: id
-		})
+		});
 		// 打开
 		mui.openWindow({
 			id: 'movie-detail'

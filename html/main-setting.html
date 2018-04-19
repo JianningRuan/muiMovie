@@ -58,30 +58,30 @@
 		data: {
 			imagesUrl: ''
 		}
-	})
+	});
 	mui.plusReady(function(){
 		mui('#list-scroll').scroll();
-	})
+	});
 	// 关于我们
 	mui('#about')[0].addEventListener('tap', function(){
 		mui.openWindow({
 			id: 'about',
 			url: './about.html'
 		})
-	})
+	});
 	// 清除缓存
 	mui('#cache')[0].addEventListener('tap', function(){
 		plus.cache.clear(()=>{
 			mui.toast('清除缓存成功');
 		});
-	})
+	});
 	// 弹出列表选择调用摄像头或相册
 	mui('#list')[0].addEventListener('tap', function(){
 		let actionSheetStyle = {
 			title: '图片来源',
 			cancel: '取消',
 			buttons: [{title:"来自相机"},{title:"来自相册"}]
-		}
+		};
 		plus.nativeUI.actionSheet(actionSheetStyle, picFromCallback);
 		function picFromCallback(e){
 			console.log(e.index);
@@ -91,7 +91,7 @@
 				openPicList();
 			}
 		}
-	})
+	});
 	// 调用摄像头
 	function openCamera(){
 		camera = plus.camera.getCamera();

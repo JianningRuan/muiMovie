@@ -58,20 +58,19 @@
 			height: '100px'
 		});
 		mui.getJSON('https://api.douban.com/v2/movie/us_box', function(res){
-			console.log(res.title)
 			vue.movie = res.subjects;
 			vue.rankingDate = res.date;
 			plus.nativeUI.closeWaiting();
-		})
+		});
 		
 		mui('#movie-list').scroll();
-	})
+	});
 	
 	function goDetail(item){
 		var id = item.subject.id;
 		mui.fire(detailPage, 'movieId', {
 			id: id
-		})
+		});
 		mui.openWindow({
 			id: 'movie-detail'
 		})
